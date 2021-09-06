@@ -7,4 +7,4 @@ Alumnos
 Sebastian Ariel Meragelman
 Alejandra Battistoni
 Victor Fabian Lifata
-Vanesa Sanabria
+Vanesa Marisol Saravia

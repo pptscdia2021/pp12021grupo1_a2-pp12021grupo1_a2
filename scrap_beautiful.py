@@ -4,37 +4,57 @@ from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
 # indicar la ruta
-url_page = 'https://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000'
-# tarda 480 milisegundos
-page = requests.get(url_page).text 
-soup = BeautifulSoup(page, "lxml")
-# Obtenemos la tabla por un ID específico
-tabla = soup.find('table', attrs={'id': 'ctl00_Contenido_tblAcciones'})
-tabla
-name=""
-price=""
-cambio=""
-volumen_num=""
-nroFila=0
-for fila in tabla.find_all("tr"):
-    #for row in  tabla.find_all("td")::
-    nroCelda=0
-    for celda in fila.find_all('td'):
-        if nroCelda==0:
-            name=celda.text
-            print("Acción: ", name)
-        if nroCelda==1:
-            price=celda.text
-            print("Valor: ", price)
-        if nroCelda==2:
-            cambio=celda.text
-            print("Variación %:", cambio)
-        if nroCelda==5:
-            volumen_num=celda.text
-            print("Valumen: ", volumen_num)
-        nroCelda=nroCelda+1
-    nroFila=nroFila+1
-    # Abrimos el csv con append para que pueda agregar contenidos al final del archivo
-    with open('bolsa_ibex35.csv', 'a') as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow([name, price, cambio, volumen_num, datetime.now()])
+
+
+
+def generar_tabla(url,tipo,att_nom,att_val):
+        
+    page = requests.get(url).text 
+    soup = BeautifulSoup(page, "lxml")
+    tabla = soup.find(tipo, attrs={att_nom: att_val})
+    tabla
+    return tabla
+    
+    
+    
+def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
+    ''' Nombre corresponde a el numero de celda donde esta el nombre identificador de la accion. Precio corresponde al valor de la accion al momento de la consulta, cambio_porc es la variacion porcentual con el ultimo cierre, volumen es la cantidad de acciones        '''
+        
+    name=""
+    price=""
+    cambio=""
+    volumen_num=""
+    time_stamp=datetime.now()
+    nroFila=0
+    
+    for fila in tabla.find_all("tr"):
+        nroCelda=0
+        for celda in fila.find_all('td'):
+            if nroCelda==nombre:
+                name=celda.text
+                print("Indice:", name)
+            if nroCelda==precio:
+                price=celda.text
+                print("Valor:", price)
+            if nroCelda==cambio_porc:
+                cambio=celda.text
+                print("Variacion %:", cambio)
+            if nroCelda==volumen:
+                volumen_num=celda.text
+                print("Volumen:", volumen_num)
+            nroCelda=nroCelda+1
+        nroFila=nroFila+1
+
+        with open('bolsa_ibex35'+time_stamp.strftime("%Y%m%d%H%M")+'.csv', 'a') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([name, price,cambio,volumen_num, time_stamp])
+
+tabla= generar_tabla('https://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000','table','id','ctl00_Contenido_tblAcciones')
+     
+nombre=0
+precio=1
+cambio_porc=2
+volumen=5
+
+
+limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen)

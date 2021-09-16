@@ -1,11 +1,15 @@
+#requerido: pip install investpy
+
+
 # import libraries
 import requests
-from bs4 import BeautifulSoup
 import csv
+import investpy
+from bs4 import BeautifulSoup
 from datetime import datetime
-# indicar la ruta
+from datetime import date, timedelta
 
-
+#DEFINICION DE FUCNIONES
 
 def generar_tabla(url,tipo,att_nom,att_val):
         
@@ -49,6 +53,47 @@ def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
             writer = csv.writer(csv_file)
             writer.writerow([name, price,cambio,volumen_num, time_stamp])
 
+            
+def devolver_inverstpy(accion,fecha,pais):
+
+    fecha_datetime=datetime.strptime(fecha, '%d/%m/%Y')
+    yesterday = fecha_datetime - timedelta(days=1)
+    ayer=yesterday.strftime('%d/%m/%Y') 
+    try:
+        search_result= investpy.search_quotes(text=accion,products=['stocks'],countries=[pais],n_results=1)
+        historical_data = search_result.retrieve_historical_data(from_date=ayer, to_date=fecha)
+        valor= historical_data.head()
+    except :
+        valor="NO ABRIO LA BOLSA"
+    return valor,accion
+
+
+
+def listado_acciones(pais,fecha):
+    time_stamp=datetime.now()
+    diccionario=investpy.stocks.get_stocks_dict(country=pais,columns=None,as_json=False)
+    acciones_pais=[]
+
+    for nombre in diccionario:
+        acciones_pais.append(nombre["name"])
+        valor,accion=devolver_inverstpy(nombre["name"],fecha,pais)
+    
+        if isinstance(valor,str):
+            pass
+        else:
+            lista_valores=valor.values.tolist()
+            lista_valores[0].insert(0,accion)
+            print(lista_valores[0])
+            
+            with open('bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H%M")+'.csv', 'a') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow([lista_valores[0][0], lista_valores[0][1],lista_valores[0][6],lista_valores[0][5], fecha])
+            
+            
+    return lista_valores[0]
+            
+#PRUEBA Y EJECUCION
+    
 tabla= generar_tabla('https://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000','table','id','ctl00_Contenido_tblAcciones')
      
 nombre=0
@@ -58,3 +103,13 @@ volumen=5
 
 
 limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen)
+   
+
+
+
+
+
+
+pais='Spain'
+fecha='16/09/2021'
+listado_acciones(pais,fecha)

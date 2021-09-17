@@ -14,6 +14,8 @@ from datetime import datetime
 
 
 
+
+
 def generar_tabla(url,tipo,att_nom,att_val):
         
     page = requests.get(url).text 

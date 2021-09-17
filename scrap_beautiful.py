@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import date, timedelta
 
+
 #DEFINICION DE FUCNIONES
 
 def generar_tabla(url,tipo,att_nom,att_val):
@@ -39,17 +40,26 @@ def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
                 print("Indice:", name)
             if nroCelda==precio:
                 price=celda.text
+                price=price.replace(".","")
+                price=price.replace(",",".")
                 print("Valor:", price)
             if nroCelda==cambio_porc:
                 cambio=celda.text
+                cambio=cambio.replace(".","")
+                cambio=cambio.replace(",",".")
+
                 print("Variacion %:", cambio)
             if nroCelda==volumen:
                 volumen_num=celda.text
+                volumen_num=volumen_num.replace(".","")
+                volumen_num=volumen_num.replace(",",".")
+                
+                
                 print("Volumen:", volumen_num)
             nroCelda=nroCelda+1
         nroFila=nroFila+1
 
-        with open('bolsa_ibex35'+time_stamp.strftime("%Y%m%d%H%M")+'.csv', 'a') as csv_file:
+        with open('bolsa_ibex35'+time_stamp.strftime("%Y%m%d%H")+'.csv', 'a') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([name, price,cambio,volumen_num, time_stamp])
 
@@ -85,7 +95,7 @@ def listado_acciones(pais,fecha):
             lista_valores[0].insert(0,accion)
             print(lista_valores[0])
             
-            with open('bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H%M")+'.csv', 'a') as csv_file:
+            with open('bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H")+'.csv', 'a') as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow([lista_valores[0][0], lista_valores[0][1],lista_valores[0][6],lista_valores[0][5], fecha])
             
@@ -111,5 +121,5 @@ limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen)
 
 
 pais='Spain'
-fecha='16/09/2021'
+fecha='18/09/2021'
 listado_acciones(pais,fecha)

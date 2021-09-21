@@ -12,6 +12,11 @@ from datetime import date, timedelta
 
 #DEFINICION DE FUCNIONES
 
+def respaldo_csv(nombre,nuevonombre):
+    import pandas as pd
+    df=pd.read_csv(nombre)
+    df.to_csv(nuevonombre)
+
 def generar_tabla(url,tipo,att_nom,att_val):
         
     page = requests.get(url).text 
@@ -31,7 +36,7 @@ def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
     volumen_num=""
     time_stamp=datetime.now()
     nroFila=0
-    
+    nuevonombre='bolsa_ibex35'+time_stamp.strftime("%Y%m%d%H")+'.csv'
     for fila in tabla.find_all("tr"):
         nroCelda=0
         for celda in fila.find_all('td'):
@@ -59,9 +64,10 @@ def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
             nroCelda=nroCelda+1
         nroFila=nroFila+1
 
-        with open('bolsa_ibex35'+time_stamp.strftime("%Y%m%d%H")+'.csv', 'a') as csv_file:
+        with open('bolsa_ibex35.csv', 'a') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([name, price,cambio,volumen_num, time_stamp])
+    respaldo_csv('bolsa_ibex35.csv',nuevonombre)
 
             
 def devolver_inverstpy(accion,fecha,pais):
@@ -83,7 +89,7 @@ def listado_acciones(pais,fecha):
     time_stamp=datetime.now()
     diccionario=investpy.stocks.get_stocks_dict(country=pais,columns=None,as_json=False)
     acciones_pais=[]
-
+    nuevonombre='bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H")+'.csv'
     for nombre in diccionario:
         acciones_pais.append(nombre["name"])
         valor,accion=devolver_inverstpy(nombre["name"],fecha,pais)
@@ -95,10 +101,10 @@ def listado_acciones(pais,fecha):
             lista_valores[0].insert(0,accion)
             print(lista_valores[0])
             
-            with open('bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H")+'.csv', 'a') as csv_file:
+            with open('bolsa_investpy.csv', 'a') as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow([lista_valores[0][0], lista_valores[0][1],lista_valores[0][6],lista_valores[0][5], fecha])
-            
+    respaldo_csv('bolsa_investpy.csv',nuevonombre)
             
     return lista_valores[0]
             

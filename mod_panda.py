@@ -43,6 +43,6 @@ def maximoyminimo(archivo):
 maximo,minimo=maximoyminimo("bolsa_ibex35.csv")
 print("valormaximo:")
 print(maximo)
-print("-----")
+print("------")
 print("valorminimo:")
 print(minimo)

@@ -25,10 +25,24 @@ def evaluar_diferencias(cv_madrid,csv_investpy):
             except KeyError:
                 pass
     
-        print("NOMBRE1:"+nombre+" NOMBRE2: "+nuevo_nombre+" VAL1: "+str(val1)+" VAL2: "+str(val2)+" VAR1: "+str(var1)+" VAR2: "+str(var2)+" VOL1: "+str(vol1)+" VOL2: "+str(vol2))
-        print("NOMBRE1:"+nombre+" DIFERENCIA DE VALOR: "+str(val2-val1)+" DIFERENCIA DE VARIACION: "+str(abs(var2)-abs(var1))+" DIFERENCIA DE VOLUMEN: "+str(vol2-vol1))
+        print("NOMBRE1:"+str(nombre)+" NOMBRE2: "+str(nuevo_nombre)+" VAL1: "+str(val1)+" VAL2: "+str(val2)+" VAR1: "+str(var1)+" VAR2: "+str(var2)+" VOL1: "+str(vol1)+" VOL2: "+str(vol2))
+        print("NOMBRE1:"+str(nombre)+" DIFERENCIA DE VALOR: "+str(val2-val1)+" DIFERENCIA DE VARIACION: "+str(abs(var2)-abs(var1))+" DIFERENCIA DE VOLUMEN: "+str(vol2-vol1))
 
 
 cv_madrid="bolsa_ibex35.csv"
 csv_investpy="bolsa_investpy.csv"
 evaluar_diferencias(cv_madrid,csv_investpy)
+
+def maximoyminimo(archivo):
+    import pandas as pd
+    df = pd.read_csv(archivo)
+
+    maximo=df.iloc[:,2].argmax()
+    minimo=df.iloc[:,2].argmin()
+    return df.loc[[maximo]], df.loc[[minimo]]
+maximo,minimo=maximoyminimo("bolsa_ibex35.csv")
+print("valormaximo:")
+print(maximo)
+print("----")
+print("valorminimo:")
+print(minimo)

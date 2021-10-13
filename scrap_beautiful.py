@@ -1,7 +1,7 @@
 #requerido: pip install investpy
 
 
-# import libraries
+# importamos librerias
 import requests
 import csv
 import investpy
@@ -13,12 +13,13 @@ from datetime import date, timedelta
 #DEFINICION DE FUCNIONES
 
 def respaldo_csv(nombre,nuevonombre):
+    '''Se genera una copia del archivo csv usando Pandas, nombre es el archivo origen, nuevo nombre es el archivo destino'''
     import pandas as pd
     df=pd.read_csv(nombre)
     df.to_csv(nuevonombre)
 
 def generar_tabla(url,tipo,att_nom,att_val):
-        
+    '''Se genera un arreglo de informacion (tabla) a partir de la informacion obtenida dentro de la etiqueta de tipo (tipo) identificada con los atributos (att_nom) y (att_val) dentro de la (url) '''    
     page = requests.get(url).text 
     soup = BeautifulSoup(page, "lxml")
     tabla = soup.find(tipo, attrs={att_nom: att_val})
@@ -28,7 +29,7 @@ def generar_tabla(url,tipo,att_nom,att_val):
     
     
 def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
-    ''' Nombre corresponde a el numero de celda donde esta el nombre identificador de la accion. Precio corresponde al valor de la accion al momento de la consulta, cambio_porc es la variacion porcentual con el ultimo cierre, volumen es la cantidad de acciones        '''
+    '''La funcion genera un archivo csv con la fecha de ejecucion y una copia del mismo con un nombre generico a partir de la tabla obtenida en la funcion generar_tabla. Nombre corresponde a el numero de celda donde esta el nombre identificador de la accion. Precio corresponde al valor de la accion al momento de la consulta, cambio_porc es la variacion porcentual con el ultimo cierre, volumen es la cantidad de acciones        '''
         
     name=""
     price=""
@@ -71,7 +72,7 @@ def limpiar_tabla(tabla,nombre,precio,cambio_porc,volumen):
 
             
 def devolver_inverstpy(accion,fecha,pais):
-
+    '''Se obtiene un dataframe con la informacion entregada por la api INVESTPY con datos de la accion consultada en la fecha y el pais de interes'''
     fecha_datetime=datetime.strptime(fecha, '%d/%m/%Y')
     yesterday = fecha_datetime - timedelta(days=1)
     ayer=yesterday.strftime('%d/%m/%Y') 
@@ -86,12 +87,14 @@ def devolver_inverstpy(accion,fecha,pais):
 
 
 def listado_acciones(pais,fecha):
+    '''Obtiene a partir de la API investpy la lista de acciones disponibles para un determinado (pais) en una determinada (fecha). A partir de esta lista vamos a llamar a la funcion devolver_investpy. Los resultados los guardara en un csv con la fecha y una copia con un nombre generico'''
     time_stamp=datetime.now()
     diccionario=investpy.stocks.get_stocks_dict(country=pais,columns=None,as_json=False)
     acciones_pais=[]
     nuevonombre='bolsa_'+pais+'_investpy'+time_stamp.strftime("%Y%m%d%H")+'.csv'
     for nombre in diccionario:
         acciones_pais.append(nombre["name"])
+        #COMIENZO LAS LLAMADAS PARA OBTENER LOS DATAFRAME CON LOS DATOS DE LAS ACCIONES EN DICCIONARIO
         valor,accion=devolver_inverstpy(nombre["name"],fecha,pais)
     
         if isinstance(valor,str):
@@ -108,10 +111,12 @@ def listado_acciones(pais,fecha):
             
     return lista_valores[0]
             
-#PRUEBA Y EJECUCION
-    
+# INICIO DE PRUEBA Y EJECUCION - 
+
+# PARA EL EJEMPLO USAREMOS: 'https://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000'    
 tabla= generar_tabla('https://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000','table','id','ctl00_Contenido_tblAcciones')
-     
+
+#LAS SIGUIENTES VARIABLES DEFINEN LA POSICION EN LA TABLA DE LA INFORMACION REQUERIDA, DE EXISTIR UNA MODIFICACION EN LA URL DESTINO SE DEBERAN REDEFINIR ESTOS VALORES     
 nombre=0
 precio=1
 cambio_porc=2

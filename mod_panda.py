@@ -1,5 +1,6 @@
-# Diccionario de acciones para compensar diferencias de denominación
+# Diccionario de acciones para compensar diferencias de denominación entre la bolsa de madrid y la api INVESTPY
 def evaluar_diferencias(cv_madrid,csv_investpy):
+    '''La funcion toma dos archivos CSV de distintas fuentes y compara las variaciones entre ambas fuentes accion por accion'''
     import pandas as pd
     relacion_acciones= dict()
     relacion_acciones= {'ACCIONA' : 'Acciona' , 'ACERINOX' : 'Acerinox' , 'ACS' : 'ACS' , 'AENA' : 'Aena' , 'ALMIRALL' : 'Almirall' , 'AMADEUS' : 'Amadeus' , 'ARCELORMIT.' : 'ArcelorMittal' , 'B.SANTANDER' : 'Santander' , 'BA.SABADELL' : 'B. Sabadell' , 'BANKINTER' : 'Bankinter' , 'BBVA' : 'BBVA' , 'CAIXABANK' : 'Caixabank' , 'CELLNEX' : 'Cellnex Telecom' , 'CIE AUTOMOT.' : 'Cie Automotive' , 'ENAGAS' : 'Enagas' , 'ENDESA' : 'Endesa' , 'FERROVIAL' : 'Ferrovial' , 'FLUIDRA' : 'Fluidra' , 'GRIFOLS CL.A' : 'Grifols' , 'IAG' : 'IAG' , 'IBERDROLA' : 'Iberdrola' , 'INDITEX' : 'Inditex' , 'INDRA A' : 'Indra A' , 'INM.COLONIAL' : 'Inmobiliaria Colonial' , 'MAPFRE' : 'Mapfre' , 'MELIA HOTELS' : 'Melia Hotels' , 'MERLIN' : 'Merlin Properties SA' , 'NATURGY' : 'Naturgy Energy' , 'PHARMA MAR' : 'Pharma Mar' , 'REPSOL' : 'Repsol' , 'SOLARIA' : 'Solaria' , 'TELEFONICA' : 'Telefonica' , 'VISCOFAN' : 'Viscofan' }
@@ -29,17 +30,26 @@ def evaluar_diferencias(cv_madrid,csv_investpy):
         print("NOMBRE1:"+str(nombre)+" DIFERENCIA DE VALOR: "+str(val2-val1)+" DIFERENCIA DE VARIACION: "+str(abs(var2)-abs(var1))+" DIFERENCIA DE VOLUMEN: "+str(vol2-vol1))
 
 
-cv_madrid="bolsa_ibex35.csv"
-csv_investpy="bolsa_investpy.csv"
-evaluar_diferencias(cv_madrid,csv_investpy)
+
+
 
 def maximoyminimo(archivo):
+    '''LA FUNCION TOMA COMO PARAMETRO UN ARCHIVO Y ANALIZA CON PANDAS CUAL ES LA ACCION CON MAYOR INDICE DE PERDIDA Y CUAL CON MAYOR DE GANANCIA'''
     import pandas as pd
     df = pd.read_csv(archivo)
 
     maximo=df.iloc[:,2].argmax()
     minimo=df.iloc[:,2].argmin()
     return df.loc[[maximo]], df.loc[[minimo]]
+
+# INICIO DE PRUEBAS Y EJECUCION
+
+
+cv_madrid="bolsa_ibex35.csv"
+csv_investpy="bolsa_investpy.csv"
+evaluar_diferencias(cv_madrid,csv_investpy)
+
+
 maximo,minimo=maximoyminimo("bolsa_ibex35.csv")
 print("valormaximo:")
 print(maximo)

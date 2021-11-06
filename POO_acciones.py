@@ -34,17 +34,7 @@ class Accion:
        
    
    
-    #def __leer__(self,origen,nombre,valor,volumen,variacion,fecha):
-    def __leer__(self):
-        '''Lee el registro de la accion de un csv'''
-        if self.origen == "" or self.nombre == "" or self.fecha == "" :
-            print("EL METODO __leer__ requiere que se carguen los arguentos ORIGEN,NOMBRE,FECHA")
-        else:
-            array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
-            lista_acciones=array_acciones.loc[(array_acciones['Nombre'] == self.nombre) & (array_acciones['Fecha'] == self.fecha)]
-            print(self.nombre)
-            print(lista_acciones)
-        return
+ 
        
    
     def __imprimir__(self):

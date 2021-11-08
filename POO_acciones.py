@@ -118,3 +118,12 @@ class Accion:
            
             array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
             lista_acciones=array_acciones.loc[(array_acciones['Fecha'] == self.fecha)]
+           
+       
+            try:
+                maxima =  lista_acciones.loc[lista_acciones["Variacion"].idxmax()]
+                print(maxima)
+                return maxima
+            except ValueError:
+                print("SIN REGISTROS PARA LA FECHA")
+           

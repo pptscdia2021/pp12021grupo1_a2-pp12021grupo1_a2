@@ -1,5 +1,10 @@
 import csv
 import pandas as pd
+from datetime import datetime
+import requests
+import investpy
+from bs4 import BeautifulSoup
+from datetime import date, timedelta
 
 class Accion:
    
@@ -10,8 +15,10 @@ class Accion:
     # volumen es el volumen de las acciones
     # variacion es la variacion de las acciones con respecto al dia anterior (en caso de ser habil)
     # fecha es la fecha a la cual corresponden los valores anteriores obtenidos
+
    
-    def __init__(self,origen,nombre,valor,volumen,variacion,fecha):
+   
+    def __init__(self,origen,nombre=None,valor=None,volumen=None,variacion=None,fecha=None):
         self.origen = origen
         self.nombre = nombre
         self.valor = valor
@@ -22,7 +29,7 @@ class Accion:
     #def __guardar__(self,origen,nombre,valor,volumen,variacion,fecha):
     def __guardar__(self):
         '''Guarda el registro de la accion en un csv'''
-        if self.valor == "" or self.volumen == "" or self.variacion == "" or self.nombre == "" or self.fecha == "" or self.origen == "":
+        if self.valor == None or self.volumen == None or self.variacion == None or self.nombre == None or self.fecha == None or self.origen == "":
             print("EL METODO __guardar__ requiere que se carguen todos los argumentos")
            
         else:    
@@ -34,7 +41,47 @@ class Accion:
        
    
    
- 
+    #def __leer__(self,origen,nombre,valor,volumen,variacion,fecha):
+    def __leer__(self):
+        '''Lee el registro de la accion de un csv'''
+           
+        try:
+            if self.origen == "" and self.nombre == None and self.fecha == None :
+                print("EL METODO __leer__ requiere que se carguen los arguentos ORIGEN,NOMBRE,FECHA")
+                return
+            elif self.origen == "":
+                print("EL METODO __leer__ requiere que se cargue el argumento ORIGEN")
+                return
+            elif self.nombre == None and self.fecha == None:
+                array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
+                lista_acciones=array_acciones.loc[(array_acciones['Nombre'] != "") & (array_acciones['Fecha'] != "")]
+           
+                print(lista_acciones)
+                return
+            elif  self.fecha == None:
+                array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
+                lista_acciones=array_acciones.loc[(array_acciones['Nombre'] == self.nombre) & (array_acciones['Fecha'] != "")]
+                print(self.nombre)
+                print(lista_acciones)
+                return
+            elif  self.nombre == None:
+                array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
+                lista_acciones=array_acciones.loc[(array_acciones['Nombre'] != "") & (array_acciones['Fecha'] == self.fecha)]
+                print(self.fecha)
+                print(lista_acciones)
+                return
+            else  :
+                array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
+                lista_acciones=array_acciones.loc[(array_acciones['Nombre'] == self.nombre) & (array_acciones['Fecha'] == self.fecha)]
+                print(lista_acciones)
+                return
+               
+               
+        except FileNotFoundError:
+            print("EL ARCHIVO DE ORIGEN NO EXISTE")
+           
+   
+   
        
    
     def __imprimir__(self):
@@ -50,14 +97,14 @@ class Accion:
 
     def __historico__(self,fecha_inicio):
         '''Retorna los valores historicos de la accion'''
-        pass
+        if self.origen == "" or self.nombre == None  :
+            print("EL METODO __histrico__ requiere que se carguen los arguentos ORIGEN y NOMBRE")
+            return
+        else :
+            array_acciones= pd.read_csv('bolsa_'+str(self.origen)+'.csv',names=["Nombre", "Valor", "Variacion", "Volumen", "Fecha"])
+            lista_acciones=array_acciones.loc[(array_acciones['Nombre'] == self.nombre) & (array_acciones['Fecha'] >= fecha_inicio)]
+           
+            print(lista_acciones)
+            return
 
-    def __maximo__(self,origen,fecha):
-        '''Retorna la accion con mayor ganancia'''
-        pass
-
-    def __minimo__(self,origen,fecha):
-        '''Retorna la accion con mayor perdida'''
-        pass
-
-    
+       

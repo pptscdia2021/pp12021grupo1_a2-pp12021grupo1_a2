@@ -10,6 +10,13 @@ Victor Fabian Lifata
 Vanesa Marisol Saravia
 
 
+                ESTRUCTURA DEL REPOSITORIO
+ 1) VERSION ESTRUCTURADA V1  -> figura como un release y alli esta el codigo de la programacion estructurada
+ 2) En el main esta actualmente el archivo Acciones_POO.py que tiene todo el codigo orientado a objetos 
+ 3) Hay dos ramas creadas mysql y mongodb que tienen los codigos que resuelven los ejercicios de BBDD
+ 4) En la Wiki esta la explicacion completa del funcionamiento
+
+
 Al momento de entregar el trabajo tenemos 3 proyectos definidos en github que reflejan la metodología de trabajo que aplicamos.
 En primera instancia se nos solicitó la realización de un sistema de web scrapping con programación modular y para ello dividimos el proyecto en 3 milestones con xxx issues , cuando estábamos trabajando en el último milestone se nos requirió modificar el método de trabajo y rediseñar el código con una metodología orientada a objetos. Al momento de este nuevo requerimiento teníamos una versión funcional aunque con muchas mejoras pendientes.  Dicha versión permitía descargar datos de la bolsa de madrid desde la página de dicha bolsa obteniendo una tabla de datos usando la librería beautifulsoup,  si bien se evaluó realizar esa extracción usando la librería de selenium nos encontramos que la misma requería mucho mas tiempo y recursos ya que iniciaba una instancia de un navegador para interpretar el contenido y luego sobre ese navegador realizábamos la descarga de información  con métodos propios de selenium,  lo cual reemplazamos por el método request junto a beautiful soup y obtuvimos los mismos resultados pero en menor tiempo (esta técnica es conveniente para este caso particular, ya que si se quiere realizar en otras paginas el web scrapping resultaba más conveniente el uso de selenium, por ejemplo para obtener desde la página de yahoofinance los datos de todas las acciones en forma de tabla ). 
 A su vez usamos un segundo mecanismo de obtención de datos mediante la api de investpy,  decidimos usar dicha api para consultar los datos ya que la misma permite consultar los valores de cotización de la bolsa que elijamos y en La Moneda de dicho pais,  así evitamos los problemas que nos traía la api de yahoofinance que traía los valores de acciones pero de una sola bolsa y en dólares (no podíamos traer la bolsa de madrid en euros).

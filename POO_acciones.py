@@ -31,12 +31,6 @@ class Accion:
                 writer.writerow([self.nombre, self.valor,self.variacion,self.volumen, self.fecha])
                 print("Se guardo correctamente el registro "+self.nombre+" en el archivo: "+'bolsa_'+str(self.origen)+'.csv')
 
-       
-   
-   
- 
-       
-   
     def __imprimir__(self):
         '''Imprime la informacion del objeto'''
         print("-------------------------")
